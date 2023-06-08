@@ -108,11 +108,6 @@ function App() {
 
  console.log(limericks);
 
-
-  useEffect(() => {
-    pickLimericks();
-  }, []);
-
 const pickLimericks = () => {
   const currentLimerickIndex = Math.floor(Math.random() * limericks.length);
   let nextLimerickIndex = Math.floor(Math.random() * limericks.length);
@@ -125,29 +120,37 @@ const pickLimericks = () => {
   setNextLimerick({ ...limericks[nextLimerickIndex], isAI: 1 - limericks[currentLimerickIndex].isAI });
 };
 
-  const handleHigher = () => {
-    if (nextLimerick.isAI > currentLimerick.isAI) {
-      const newScore = score + 1;
-      setScore(newScore);
-       saveScoreToFirestore(newScore);
-    } else {
-      setScore(0);
-      setGameOver(true);
-    }
-    pickLimericks();
-  };
+useEffect(() => {
+  pickLimericks();
+}, [score, gameOver]);
 
   const handleLower = () => {
-    if (nextLimerick.isAI < currentLimerick.isAI) {
-       const newScore = score + 1;
-      setScore(newScore);
-      saveScoreToFirestore(newScore);
-    } else {
-      setScore(0);
-      setGameOver(true);
-    }
-    pickLimericks();
-  };
+  if (nextLimerick.isAI < currentLimerick.isAI) {
+    setScore(score + 1);
+    saveScoreToFirestore(score + 1);
+  } else {
+    setScore(0);
+    setGameOver(true);
+    saveScoreToFirestore(0);
+  }
+  
+  pickLimericks();
+};
+
+const handleHigher = () => {
+  if (nextLimerick.isAI > currentLimerick.isAI) {
+    setScore(score + 1);
+    saveScoreToFirestore(score + 1);
+  } else {
+    setScore(0);
+    setGameOver(true);
+    saveScoreToFirestore(0);
+  }
+  
+  pickLimericks();
+};
+
+    
 
   const handleRestartGame = () => {
     setScore(0);
