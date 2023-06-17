@@ -121,8 +121,8 @@ const RestartButton = styled(Button)({
 
 function App() {
   const [score, setScore] = useState(0);
-  const [currentLimerick, setCurrentLimerick] = useState(null);
-  const [nextLimerick, setNextLimerick] = useState(null);
+  const [currentLimerick, setCurrentLimerick] = useState([]);
+  const [nextLimerick, setNextLimerick] = useState([]);
   const [gameOver, setGameOver] = useState(false);
 
   const [higherScore, setHigherScore] = useState(0);
@@ -160,7 +160,7 @@ useEffect(() => {
 }, [score, gameOver,higherScore,lowerScore]);
 
   const handleLower = () => {
-  if (nextLimerick.isAI > currentLimerick.isAI) {
+  if (nextLimerick?.isAI > currentLimerick?.isAI) {
     setLowerScore(lowerScore + 1);
     setScore(score + 1);
     saveScoreToFirestore(score + 1);
@@ -175,7 +175,7 @@ useEffect(() => {
 };
 
 const handleHigher = () => {
-  if (nextLimerick.isAI < currentLimerick.isAI) {
+  if (nextLimerick?.isAI < currentLimerick?.isAI) {
      setHigherScore(higherScore + 1);
     setScore(score + 1);
     saveScoreToFirestore(score + 1);
@@ -209,8 +209,8 @@ const handleHigher = () => {
   }
 };
 
-console.log("Higher",currentLimerick.isAI === 1 ? 'AI' : 'Real');
-console.log("Lower",nextLimerick.isAI === 1 ? 'AI' : 'Real')
+console.log("Higher",currentLimerick?.isAI === 1 ? 'AI' : 'Real',"Lower",nextLimerick?.isAI === 1 ? 'AI' : 'Real');
+
 
   return (
     <Container>
