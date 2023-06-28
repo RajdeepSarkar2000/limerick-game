@@ -33,26 +33,34 @@ console.log("arrayReal", arrayReal.length)
 
 
 
-const Container = styled('div')({
+const Container = styled('div')(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
   height: '100vh',
-  padding : '0 180px'
-});
+  padding: '0 20px', 
+  [theme.breakpoints.down('md')]: {
+    padding: '0 20px', 
+  },
+}));
 
-const Title = styled('h1')({
+const Title = styled('h1')(({ theme }) => ({
   fontSize: '42px',
   marginBottom: '16px',
-  
-});
+   [theme.breakpoints.down('md')]: {
+    fontSize: '24px', 
+  },
+}));
 
-const Details = styled('p')({
+const Details = styled('p')(({ theme }) => ({
   fontSize: '18px',
   marginBottom: '8px',
   textAlign: 'center',
-});
+   [theme.breakpoints.down('md')]: {
+    fontSize: '14px', 
+  },
+}));
 
 const Score  = styled(Details)({
   fontWeight: '900',
@@ -68,12 +76,16 @@ const LimerickContainer = styled('div')({
   marginBottom: '16px',
 });
 
-const LimerickText = styled('p')({
+const LimerickText = styled('p')(({ theme }) => ({
   fontSize: '16px',
   color: 'white',
   whiteSpace: 'pre-line',
-  margin : 0
-});
+  margin : 0 ,
+  [theme.breakpoints.down('md')]: {
+    fontSize: '14px', 
+  },
+   
+}));
 
 const ButtonContainer = styled('div')({
   display: 'flex',
@@ -172,7 +184,7 @@ useEffect(() => {
 }, [score, gameOver,higherScore,lowerScore]);
 
   const handleLower = () => {
-  if (nextLimerick?.isAI > currentLimerick?.isAI) {
+  if (nextLimerick?.isAI < currentLimerick?.isAI) {
     setLowerScore(lowerScore + 1);
     setScore(score + 1);
     saveScoreToFirestore(score + 1);
@@ -187,7 +199,7 @@ useEffect(() => {
 };
 
 const handleHigher = () => {
-  if (nextLimerick?.isAI < currentLimerick?.isAI) {
+  if (nextLimerick?.isAI > currentLimerick?.isAI) {
      setHigherScore(higherScore + 1);
     setScore(score + 1);
     saveScoreToFirestore(score + 1);
@@ -230,11 +242,15 @@ console.log("Higher",currentLimerick?.isAI === 1 ? 'AI' : 'Real',"Lower",nextLim
 
 
   return (
-    <Container>
+    <Container style={{
+      '@media (min-width: 960px)': {
+        padding: ' 20px',
+      },
+    }}>
    
       <Title >A Turing Test for LimeGPT!
 </Title>
-      <Details>Each game round pops out two limericks, one of which is from (Sam Ballas’ dataset of 90,000 real limericks) and the other from our generative model for limericks (<Link href="https://www.youtube.com/watch?v=8ybW48rKBME">LimeGPT</Link>). Guess the real limerick to beat the test 🚀
+      <Details>Each game round pops out two limericks, one of which is from <Link href="https://github.com/sballas8/PoetRNN/blob/master/data/limericks.csv"> Sam Ballas’ dataset of 90,000 real limericks</Link> and the other from our generative model for limericks <Link href="https://github.com/kunal-bhar/lime-GPT">LimeGPT</Link>. Guess the real limerick to beat the test 🚀
  </Details>
       <Score>Score: {score}</Score>
     
@@ -244,13 +260,13 @@ console.log("Higher",currentLimerick?.isAI === 1 ? 'AI' : 'Real',"Lower",nextLim
             <LimerickText>{currentLimerick.text} 
           </LimerickText>
           </LimerickContainer>
-           <img style={{height:"50px",width:"auto",alignSelf:"flex-start"}} src="/notes-img.png"/>
+       
           <ButtonContainer>
             <ChooseButton onClick={handleHigher}><ArrowDropUpIcon/></ChooseButton>
             <ChooseButton onClick={handleLower}><ArrowDropDownIcon/></ChooseButton>
            
           </ButtonContainer>
-            <img style={{height:"50px",width:"auto",alignSelf:"flex-end",marginBottom:"32px"}} src="/ml.png"/>
+           
           <LimerickContainer>
             <LimerickText>{nextLimerick.text}</LimerickText>
 
