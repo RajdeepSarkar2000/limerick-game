@@ -142,7 +142,8 @@ const RestartButton = styled(Button)({
 });
 
 function App() {
-  const [score, setScore] = useState(0);
+  const initialScore = parseInt(localStorage.getItem("totalScore")) || 0;
+  const [score, setScore] = useState(initialScore);
   const [currentLimerick, setCurrentLimerick] = useState([]);
   const [nextLimerick, setNextLimerick] = useState([]);
   const [gameOver, setGameOver] = useState(false);
@@ -188,8 +189,12 @@ function App() {
     } else {
       setScore(0);
       setGameOver(true);
-      saveScoreToFirestore(0);
+      // saveScoreToFirestore(0);
     }
+
+    //   if (gameOver) {
+    //   saveScoreToFirestore(score);
+    // }
 
     pickLimericks();
   };
@@ -198,12 +203,16 @@ function App() {
     if (nextLimerick?.isAI > currentLimerick?.isAI) {
       setHigherScore(higherScore + 1);
       setScore(score + 1);
-      saveScoreToFirestore(score + 1);
+      // saveScoreToFirestore(score + 1);
     } else {
       setScore(0);
       setGameOver(true);
-      saveScoreToFirestore(0);
+      // saveScoreToFirestore(0);
     }
+
+    //   if (gameOver) {
+    //   saveScoreToFirestore(score);
+    // }
 
     pickLimericks();
   };
@@ -237,10 +246,14 @@ function App() {
     nextLimerick?.isAI === 1 ? "AI" : "Real"
   );
 
-  
+    useEffect(() => {
+    if (gameOver && score > initialScore) {
+      localStorage.setItem("highestScore", score.toString());
+      saveScoreToFirestore(score);
+    }
+  }, [gameOver]);
 
-// Call the saveScoreToFirestore function
-saveScoreToFirestore(score);
+  
 
   return (
     <Container
