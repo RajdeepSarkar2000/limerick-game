@@ -77,7 +77,7 @@ const LimerickContainer = styled("div")({
 
 const LimerickText = styled("p")(({ theme }) => ({
   fontSize: "16px",
-  color: "white",
+  color: "#0056b3",
   whiteSpace: "pre-line",
   margin: 0,
   [theme.breakpoints.down("md")]: {
@@ -151,6 +151,8 @@ function App() {
   const [higherScore, setHigherScore] = useState(0);
   const [lowerScore, setLowerScore] = useState(0);
 
+  const [gameOverCount, setGameOverCount] = useState(0);
+
   console.log(higherScore, lowerScore);
 
   const pickLimericks = () => {
@@ -189,6 +191,7 @@ function App() {
     } else {
       setScore(0);
       setGameOver(true);
+       setGameOverCount(gameOverCount + 1);
       // saveScoreToFirestore(0);
     }
 
@@ -207,6 +210,7 @@ function App() {
     } else {
       setScore(0);
       setGameOver(true);
+       setGameOverCount(gameOverCount + 1);
       // saveScoreToFirestore(0);
     }
 
@@ -239,6 +243,21 @@ function App() {
   }
 };
 
+const gameOverCountFirebase = async () => {
+  try {
+    const countCollection = collection(db, "count");
+    await addDoc(countCollection, { gameOverCount });
+  } catch (error) {
+    console.error("Error saving score to Firestore:", error);
+  }
+};
+
+useEffect(() => {
+  if (gameOver) {
+    saveScoreToFirestore(score); // Save the score
+    gameOverCountFirebase(); // Save the game over count
+  }
+}, [gameOver, score]);
   console.log(
     "Higher",
     currentLimerick?.isAI === 1 ? "AI" : "Real",
@@ -253,7 +272,7 @@ function App() {
     }
   }, [gameOver]);
 
-  
+
 
   return (
     <Container

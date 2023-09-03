@@ -27,6 +27,24 @@ useEffect(() => {
 
   console.log(scores);
 
+  const [totalGameOverCount, setTotalGameOverCount] = useState(0);
+
+// Fetch the total game over count from Firestore
+const fetchTotalGameOverCount = async () => {
+  try {
+    const countCollection = collection(db, "count");
+    const snapshot = await getDocs(countCollection);
+   
+    setTotalGameOverCount(snapshot.size);
+  } catch (error) {
+    console.error("Error fetching total game over count:", error);
+  }
+};
+
+useEffect(() => {
+  fetchTotalGameOverCount();
+}, []);
+
   return (
     <div>
       <h1>Scores</h1>
@@ -35,6 +53,7 @@ useEffect(() => {
           <li key={score.id}>{score.score}</li>
         ))}
       </ul>
+      <p>Total users: {totalGameOverCount}</p>
     </div>
   );
 }
